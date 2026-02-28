@@ -1,0 +1,43 @@
+version: '3.8'
+
+networks:
+    katban-dev:
+        driver: bridge
+
+services:
+    katbanfe:
+        image: alkampfer1/katrepo:katbanfe-image
+        ports:
+            - "80:8080"
+        depends_on:
+            - kbimg
+            - kregistry-image
+            
+    kregistry-image:
+        image: alkampfer1/katrepo:kregistry-image
+        ports:
+            - "5000:80"
+        build:
+            context: .
+            dockerfile: Dockerfile
+        depends_on:
+            - kbimg
+        networks:
+            - katban-dev
+
+    kbimg:
+        image: alkampfer1/katrepo:kbimg
+        ports:
+            - "5533:5432"
+        volumes:
+        - pgdata:/var/lib/postgresql/data
+        restart: always
+        environment:
+            POSTGRES_DB: "kantban"
+            POSTGRES_PASSWORD: "password"
+            POSTGRES_USER: "postgres"
+        networks:
+            - katban-dev
+volumes:
+    pgdata:
+
