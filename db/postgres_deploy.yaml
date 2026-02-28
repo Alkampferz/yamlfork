@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ancdb
+  labels:
+    app: ancdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      lbtype: external
+  template:
+    metadata:
+      labels:
+        lbtype: external
+        app: ancdb
+    spec:
+      containers:
+        - name: postgres
+          image: 'lin.ocir.io/axcu972imoyj/anc/ancdb:1.0.3.arm'
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              name: "5432-port"
+          envFrom:
+            - configMapRef:
+                name: postgres-secret
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgresdata
+      imagePullSecrets:
+        - name: ancdksecret
+      volumes:
+        - name: postgresdata
+          persistentVolumeClaim:
+            claimName: postgres-volume-claim

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ancbe
+  labels:
+    app: ancbe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      lbtype: external
+  template:
+    metadata:
+      labels:
+        lbtype: external
+        app: ancbe
+    spec:
+      imagePullSecrets:
+        - name: ancdksecret
+      containers:
+      - name: ancbe
+        image: 'lin.ocir.io/axcu972imoyj/anc/ancregistry:1.0.3'
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: "8080-port"

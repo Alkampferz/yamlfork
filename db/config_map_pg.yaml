@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-secret
+  labels:
+    app: ancdb
+data:
+  POSTGRES_DB: amicinelcuore
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: password
